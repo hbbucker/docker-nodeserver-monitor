@@ -22,14 +22,15 @@ public class NodeServerService {
     public final String serverName = "nodeserver";
     public final String imageName = "bucker/node-simpleserver:1.0.0";
     public final int initialPort = 3000;
+    private String netName = "rede1";
 
-    public NodeServerInfo getNewServerInfo(int number){
+    public NodeServerInfo getNewServerInfo(int number) {
         NodeServerInfo nodeServerInfo = new NodeServerInfo();
 
-        nodeServerInfo.name = String.format("%s%s", serverName,  StringUtils.leftPad( number + "", 2, "0"));
+        nodeServerInfo.name = String.format("%s%s", serverName, StringUtils.leftPad(number + "", 2, "0"));
         nodeServerInfo.port = (initialPort + number) + "";
 
-        return  nodeServerInfo;
+        return nodeServerInfo;
     }
 
     public List<Container> getListNodeServers() throws DockerException, InterruptedException {
@@ -42,6 +43,15 @@ public class NodeServerService {
         return containers;
     }
 
+    public void killContainer(List<Container> containers) {
+        //Ajustando container levantados a+
+        for (Container container : containers) {
+            dockerService.killContainer(container);
+            System.out.println("Matando container " + container.names().get(0));
+
+        }
+    }
+
     public void createNewServer(NodeServerInfo nodeServer) {
 
         String env = "NODE_PORT=" + nodeServer.port;
@@ -50,7 +60,7 @@ public class NodeServerService {
                 nodeServer.name,
                 new String[]{nodeServer.port},
                 new String[]{env},
-                portBinding
+                netName
         );
 
     }

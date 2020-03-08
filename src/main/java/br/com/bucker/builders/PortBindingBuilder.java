@@ -18,17 +18,17 @@ public class PortBindingBuilder {
 
     public PortBindingBuilder Builder(String portExpose, String portBinding) {
         this.portExpose = portExpose + "/tcp";
-        this.portBindingList.add(PortBinding.of("0.0.0.0", portBinding + ""));
+        this.portBindingList.add(PortBinding.create("0.0.0.0", portBinding));
         return this;
     }
 
     public PortBindingBuilder addPortBinding(String portBinding) {
-        this.portBindingList.add(PortBinding.of("0.0.0.0", portBinding + ""));
+        this.portBindingList.add(PortBinding.create("0.0.0.0", portBinding));
         return this;
     }
 
     public Map<String, List<PortBinding>> build(){
-        Map<String, List<PortBinding>> build = new HashMap();
+        Map<String, List<PortBinding>> build = new HashMap<>();
         build.put(portExpose, portBindingList);
         return  build;
     }

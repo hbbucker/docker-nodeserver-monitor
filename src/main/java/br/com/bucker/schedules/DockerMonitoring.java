@@ -9,14 +9,13 @@ import io.quarkus.scheduler.Scheduled;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Comparator;
 import java.util.List;
 
 @ApplicationScoped
 public class DockerMonitoring {
 
-//    private static final int cores = Runtime.getRuntime().availableProcessors();
-    private static final int cores = 6;
+    private static final int cores = Runtime.getRuntime().availableProcessors();
+//    private static final int cores = 6;
 
     @Inject
     NodeServerService nodeServerService;
@@ -43,9 +42,14 @@ public class DockerMonitoring {
 
         String nServer[] = new String[cores];
 
+        //Ajustando container levantados a+
+        containers = adjustContainerUp(containers);
+
         for (Container container : containers) {
-            int serverNumber = nodeServerService.getServerNumber(container.names().get(0));
-            nServer[serverNumber] = container.names().get(0);
+            if (container.names().size() > 0) {
+                int serverNumber = nodeServerService.getServerNumber(container.names().get(0));
+                nServer[serverNumber] = container.names().get(0);
+            }
         }
 
         for (int i = 0; i < nServer.length; i++) {
@@ -56,6 +60,16 @@ public class DockerMonitoring {
 
             }
         }
+    }
+
+    private List<Container>  adjustContainerUp(List<Container> containers) {
+        if (containers.size() > cores) {
+            List<Container> kills = containers.subList(cores, containers.size());
+            nodeServerService.killContainer(kills);
+        }
+
+        return containers.subList(0, containers.size() > cores ? cores : containers.size());
+
     }
 
     private void orderContainerByName(List<Container> containers) {

@@ -1,6 +1,7 @@
 package br.com.bucker.resource;
 
 import br.com.bucker.service.DockerService;
+import br.com.bucker.service.NodeServerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.Container;
@@ -19,11 +20,21 @@ public class DockerInfoResource {
     @Inject
     DockerService dockerService;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Container> hello() throws DockerException, InterruptedException, JsonProcessingException {
+    @Inject
+    NodeServerService nodeServerService;
 
+    @GET
+    @Path("/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Container> status() throws DockerException, InterruptedException, JsonProcessingException {
         return dockerService.getContainers();
 
+    }
+
+    @GET
+    @Path("/nodestatus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Container> nodeStatus() throws DockerException, InterruptedException, JsonProcessingException {
+        return nodeServerService.getListNodeServers();
     }
 }
