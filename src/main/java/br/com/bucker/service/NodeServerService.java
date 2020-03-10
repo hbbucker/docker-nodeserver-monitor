@@ -108,6 +108,7 @@ public class NodeServerService {
                 nodeServer.name,
                 new String[]{nodeServer.port},
                 new String[]{env},
+                new String[]{"/etc/localtime:/etc/localtime:ro"}, //ajuste do horario do container com o hospedeiro
                 netName
         );
 

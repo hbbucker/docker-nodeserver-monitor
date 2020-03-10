@@ -49,14 +49,15 @@ public class DockerService {
         return retval;
     }
 
-    public boolean createContainer(String imageName, String containerName, String[] exposePorts, String[] envValues, String netName) {
+    public boolean createContainer(String imageName, String containerName, String[] exposePorts, String[] envValues, String bindVolumes[], String netName) {
         boolean retval = true;
 
         ProcessBuilder processBuilder = new ProcessBuilder();
 
         String tmplPort = "-p %s:%s ";
         String tmplEnv = "-e %s ";
-        String cmd = "docker run --net=%s --rm -dit %s %s --name %s %s";
+        String tmplBind = "-v %s ";
+        String cmd = "docker run --net=%s --rm -dit %s %s %s --name %s %s";
 
         String ports = "";
         for (String port : exposePorts) {
@@ -68,7 +69,12 @@ public class DockerService {
             envs += String.format(tmplEnv, env);
         }
 
-        cmd = String.format(cmd, netName, envs, ports, containerName, imageName);
+        String binds = "";
+        for (String bind : bindVolumes) {
+            binds += String.format(tmplBind, bind);
+        }
+
+        cmd = String.format(cmd, netName, envs, ports, binds, containerName, imageName);
 
         // Run a shell command
         processBuilder.command("sh", "-c", cmd);
