@@ -1,8 +1,13 @@
 #/!bin/bash
 
 ENVIARPARA="hbbucker@gmail.com"
-DATA="2020-03-09"
+DATA=$(date -d"-1 days" +"%Y-%m-%d") #log do dia anterior
 CMDPARSE=./parse-log.sh
+
+## Verifica parametro de data
+if [[ -n $1 ]]; then
+  DATA=$1
+fi 
 
 TEMPLATE="Cc: ${ENVIARPARA}
 Subject: [LOGS] Analise diária de Logs ${DATA}

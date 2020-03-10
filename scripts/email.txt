@@ -1,15 +1,17 @@
 Cc: hbbucker@gmail.com
-Subject: [LOGS] Analise diária de Logs 2020-03-09
+Subject: [LOGS] Analise diária de Logs 2020-03-10
 From: no-replay@domain.com
 Content-Type: text/plain; charset='utf8'
 
- Processando 613 linhas!
-Data da Analise: 2020-03-09
+ Processando 1133545 linhas!
+Data da Analise: 2020-03-10
 
 Qtd		 Resposta
 ===		 ========
-314		 200 /haproxy?stats
-192		 503 /
-28		 200 /
-11		 304 /
-3		 503 /favicon.ico
+1133096		 200 /
+378		 200 /haproxy?stats
+24		 -1 /
+4		 503 /
+2		 404 /favicon.ico
+2		 304 /
+1		 503 /favicon.ico
