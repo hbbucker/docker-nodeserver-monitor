@@ -3,8 +3,10 @@ package br.com.bucker.resource;
 import br.com.bucker.service.DockerService;
 import br.com.bucker.service.NodeServerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.Container;
+import com.spotify.docker.client.messages.Image;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -32,9 +34,24 @@ public class DockerInfoResource {
     }
 
     @GET
-    @Path("/nodestatus")
+    @Path("/images")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Image> images() throws DockerException, InterruptedException, JsonProcessingException {
+        return dockerService.getClient().listImages(DockerClient.ListImagesParam.allImages());
+
+    }
+
+    @GET
+    @Path("/node-status")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Container> nodeStatus() throws DockerException, InterruptedException, JsonProcessingException {
         return nodeServerService.getListNodeServers();
+    }
+
+    @GET
+    @Path("/node-restore")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String nodeRestore() throws DockerException, InterruptedException, JsonProcessingException {
+        return nodeServerService.restorePreviousImageVersion();
     }
 }

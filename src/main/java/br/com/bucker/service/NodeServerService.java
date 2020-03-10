@@ -4,11 +4,14 @@ import br.com.bucker.builders.PortBindingBuilder;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.Container;
+import com.spotify.docker.client.messages.Image;
 import com.spotify.docker.client.messages.PortBinding;
 import org.apache.commons.lang.StringUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.text.Collator;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,7 +23,7 @@ public class NodeServerService {
     DockerService dockerService;
 
     public final String serverName = "nodeserver";
-    public final String imageName = "bucker/node-simpleserver:1.0.0";
+    public final String imageName = "bucker/node-simpleserver:latest";
     public final int initialPort = 3000;
     private String netName = "rede1";
 
@@ -50,6 +53,51 @@ public class NodeServerService {
             System.out.println("Matando container " + container.names().get(0));
 
         }
+    }
+
+    public void killAllContainers() throws DockerException, InterruptedException {
+        // docker images bucker/node-simpleserver --format "{{.Tag}} {{.ID}}" | sort -r
+        killContainer(getListNodeServers());
+    }
+
+    public String restorePreviousImageVersion() throws DockerException, InterruptedException {
+        List<Image> images = dockerService.getClient().listImages(DockerClient.ListImagesParam.byName(imageName.split("\\:")[0]));
+
+        if (images.size() >= 2) {
+
+            orderContainerByTagReverse(images);
+
+            killAllContainers();
+
+            String latestImage = images.get(0).repoTags().get(0);
+            String previousImage = images.get(1).repoTags().get(0);
+
+            dockerService.removeImage(latestImage.split("\\:")[0], latestImage.split("\\:")[1]);
+            dockerService.renameImageTag(latestImage.split("\\:")[0],
+                    previousImage.split("\\:")[1], "latest");
+
+            return "Imagem Restaurada " + previousImage;
+
+        } else
+            throw new DockerException("Não há imagem anterior para restaurar!");
+
+    }
+
+    private void orderContainerByTagReverse(List<Image> images) {
+        images.sort(new Comparator<Image>() {
+            @Override
+            public int compare(Image o1, Image o2) {
+                try {
+                    String tag1 = o1.repoTags().get(0).split("\\:")[1];
+                    String tag2 = o2.repoTags().get(0).split("\\:")[1];
+
+                    Collator collator = Collator.getInstance();
+                    return collator.compare(tag2, tag1);
+                } catch (Exception e) {
+                    return 0;
+                }
+            }
+        });
     }
 
     public void createNewServer(NodeServerInfo nodeServer) {

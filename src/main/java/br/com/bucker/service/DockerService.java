@@ -116,6 +116,16 @@ public class DockerService {
         return retval;
     }
 
+    public void removeImage(String imageName, String tag) throws DockerException, InterruptedException {
+        client.removeImage(imageName + ":" + tag);
+    }
+
+    public void renameImageTag(String imageName, String oldTag, String newTag) throws DockerException, InterruptedException {
+        String oTag = imageName + ":" + oldTag;
+        String nTag = imageName + ":" + newTag;
+        client.tag(oTag, nTag, true);
+    }
+
     public Network getOrCreateNetwork(String netName) {
         NetworkConfig networkConfig = NetworkConfig.builder()
                 .name(netName)

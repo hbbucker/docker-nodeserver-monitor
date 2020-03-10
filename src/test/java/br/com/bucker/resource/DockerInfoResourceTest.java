@@ -10,12 +10,11 @@ import static org.hamcrest.CoreMatchers.is;
 public class DockerInfoResourceTest {
 
     @Test
-    public void testHelloEndpoint() {
+    public void testStatusEndpoint() {
         given()
-          .when().get("/docker")
+          .when().get("/docker/status")
           .then()
-             .statusCode(200)
-             .body(is("hello"));
+             .statusCode(200);
     }
 
 }
