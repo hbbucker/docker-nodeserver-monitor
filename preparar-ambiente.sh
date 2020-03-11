@@ -28,19 +28,18 @@ if [[ ! -e /usr/local/bin/wrk ]]; then
   make
   cp wrk /usr/local/bin
 fi
-
+clear
 echo -e "\n\n\n"
-echo "não esqueça de adicionar o usuario não root"
-echo "criado na instalação ao Grupo docker, "
-echo "para que ele possa rodar os comandos Docker-cli"
-echo "Ex.: gpasswd -a usuario docker" 
-echo "* Neste ponto talvez seja necessário fazer o login novamente"
+echo "Aviso: não esqueça de adicionar o usuario não root"
+echo "       criado na instalação ao Grupo docker, "
+echo "       para que ele possa rodar os comandos Docker-cli"
+echo "       Ex.: gpasswd -a usuario docker" 
+echo "       * Neste ponto talvez seja necessário fazer o login novamente"
 sleep 10
 
 echo "clonando os projetos"
 git clone https://github.com/hbbucker/simple-nodeserver.git
 git clone https://github.com/hbbucker/docker-nodeserver-monitor.git
-
 
 echo "criando as imagens"
 cd simple-nodeserver
@@ -55,6 +54,7 @@ docker-monitor/start-server.sh
 
 sleep 5
 
+echo -e "\n\n\n"
 echo "INSTRUÇÕES"
 echo "=========="
 echo "Para executar teste de carga: docker-monitor/scripts/teste-de-carga.sh"
@@ -67,3 +67,4 @@ echo " "
 
 echo "Analisar o gerado pelo teste de carga, altere a data se necessário e informe o email que recebera o log"
 echo "  docker-monitor/scripts/analisar-log.sh 2020-03-11 email@enviarlog.com.br"
+echo -e "\n\n
