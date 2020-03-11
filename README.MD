@@ -8,7 +8,7 @@ containers pré definidos.
 
 ## Aplicação de Monitoramento
 
-A aplciação verifica os containers e inicializa ou para
+A aplicação verifica os containers, inicializa ou para
 conforme o número de Núcleos de processamento da máquina
 hospedeira.
 
