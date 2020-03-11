@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-HOST=http://localhost:8090
+HOST=http://localhost:80
 
 # Veriricar seo wrk esta instalado
 # https://github.com/wg/wrk/wiki/Installing-Wrk-on-Linux
